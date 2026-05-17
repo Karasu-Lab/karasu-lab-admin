@@ -1,0 +1,65 @@
+{
+  "Metadata": {
+    "title": "Karasu Lab Admin"
+  },
+  "Navigation": {
+    "dashboard": "Dashboard",
+    "containers": "Containers",
+    "images": "Images"
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "runningContainers": "Running Containers",
+    "availableImages": "Available Images"
+  },
+  "Containers": {
+    "title": "Containers",
+    "id": "ID",
+    "name": "Name",
+    "image": "Image",
+    "status": "Status",
+    "ports": "Ports",
+    "actions": "Actions",
+    "viewLogs": "View Logs",
+    "replace": "Replace",
+    "noContainers": "No running containers",
+    "logs": {
+      "title": "Container Logs",
+      "connecting": "Connecting...",
+      "empty": "No log output"
+    },
+    "replaceDialog": {
+      "title": "Replace Container",
+      "newImage": "New Image",
+      "newImagePlaceholder": "e.g. nginx:latest",
+      "confirm": "Replace",
+      "cancel": "Cancel",
+      "pulling": "Pulling image...",
+      "stopping": "Stopping old container...",
+      "starting": "Starting new container...",
+      "done": "Replacement complete"
+    }
+  },
+  "Images": {
+    "title": "Images",
+    "repository": "Repository",
+    "tag": "Tag",
+    "size": "Size",
+    "created": "Created",
+    "noImages": "No images available",
+    "pull": {
+      "title": "Pull Image",
+      "image": "Image Name",
+      "imagePlaceholder": "e.g. nginx:latest",
+      "start": "Pull",
+      "progress": "Pulling...",
+      "done": "Pull complete"
+    }
+  },
+  "Common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "close": "Close"
+  }
+}

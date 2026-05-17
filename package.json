@@ -1,0 +1,28 @@
+{
+  "name": "karasu-lab-admin",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Admin dashboard for Docker management",
+  "license": "MIT",
+  "author": "Hashibutogarasu",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "start": "turbo run start",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "prepare": "vp config"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "turbo": "^2.5.0",
+    "typescript": "^5.8.0",
+    "vite-plus": "catalog:"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
