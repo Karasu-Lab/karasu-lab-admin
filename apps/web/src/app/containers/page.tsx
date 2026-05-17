@@ -1,4 +1,4 @@
-import { setRequestLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { NavSidebar } from "@/components/nav-sidebar";
 import { ContainerCard } from "@/components/container-card";
 
@@ -23,16 +23,15 @@ async function fetchContainers(): Promise<ContainerInfo[]> {
     const res = await fetch(`${process.env.API_URL ?? "http://localhost:3001"}/api/containers`, {
       cache: "no-store",
     });
-    return res.json() as Promise<ContainerInfo[]>;
+    if (!res.ok) return [];
+    const data: unknown = await res.json();
+    return Array.isArray(data) ? (data as ContainerInfo[]) : [];
   } catch {
     return [];
   }
 }
 
-export default async function ContainersPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  setRequestLocale(locale);
-
+export default async function ContainersPage() {
   const t = await getTranslations("Containers");
   const containers = await fetchContainers();
 

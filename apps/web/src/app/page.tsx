@@ -1,4 +1,4 @@
-import { setRequestLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NavSidebar } from "@/components/nav-sidebar";
 
@@ -21,7 +21,9 @@ async function fetchContainers(): Promise<ContainerInfo[]> {
     const res = await fetch(`${process.env.API_URL ?? "http://localhost:3001"}/api/containers`, {
       cache: "no-store",
     });
-    return res.json() as Promise<ContainerInfo[]>;
+    if (!res.ok) return [];
+    const data: unknown = await res.json();
+    return Array.isArray(data) ? (data as ContainerInfo[]) : [];
   } catch {
     return [];
   }
@@ -32,16 +34,15 @@ async function fetchImages(): Promise<ImageInfo[]> {
     const res = await fetch(`${process.env.API_URL ?? "http://localhost:3001"}/api/images`, {
       cache: "no-store",
     });
-    return res.json() as Promise<ImageInfo[]>;
+    if (!res.ok) return [];
+    const data: unknown = await res.json();
+    return Array.isArray(data) ? (data as ImageInfo[]) : [];
   } catch {
     return [];
   }
 }
 
-export default async function DashboardPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  setRequestLocale(locale);
-
+export default async function DashboardPage() {
   const t = await getTranslations("Dashboard");
   const [containers, images] = await Promise.all([fetchContainers(), fetchImages()]);
 

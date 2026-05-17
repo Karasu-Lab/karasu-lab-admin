@@ -42,10 +42,11 @@ export default function ImagesPage() {
   const loadImages = async () => {
     try {
       const res = await fetch("/api/images");
-      const data = (await res.json()) as ImageInfo[];
-      setImages(data);
+      if (!res.ok) return;
+      const data: unknown = await res.json();
+      if (Array.isArray(data)) setImages(data as ImageInfo[]);
     } catch {
-      /* ignore network errors */
+      return;
     }
   };
 
