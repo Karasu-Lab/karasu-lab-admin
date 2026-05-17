@@ -46,6 +46,10 @@
     "tag": "タグ",
     "size": "サイズ",
     "created": "作成日時",
+    "actions": "操作",
+    "delete": "削除",
+    "editTag": "タグ編集",
+    "deleteConfirm": "このイメージを削除しますか？",
     "noImages": "利用可能なイメージなし",
     "pull": {
       "title": "イメージの取得",
@@ -54,7 +58,22 @@
       "start": "取得",
       "progress": "取得中...",
       "done": "取得完了"
+    },
+    "editTagDialog": {
+      "title": "タグ編集",
+      "repo": "リポジトリ",
+      "tag": "タグ",
+      "confirm": "保存",
+      "cancel": "キャンセル"
     }
+  },
+  "Logs": {
+    "title": "ログ",
+    "connecting": "接続中...",
+    "empty": "ログ出力なし",
+    "autoScroll": "自動スクロール",
+    "copyAll": "全コピー",
+    "clear": "クリア"
   },
   "Common": {
     "loading": "読み込み中...",
