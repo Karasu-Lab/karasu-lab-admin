@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { LogViewer } from "./log-viewer";
+import { ScrollText, RefreshCw } from "lucide-react";
 import { ReplaceDialog } from "./replace-dialog";
 
 interface ContainerPort {
@@ -30,7 +31,7 @@ interface ContainerCardProps {
 
 export function ContainerCard({ container }: ContainerCardProps) {
   const t = useTranslations("Containers");
-  const [showLogs, setShowLogs] = useState(false);
+  const router = useRouter();
   const [replaceOpen, setReplaceOpen] = useState(false);
 
   const displayName = container.names[0]?.replace(/^\//, "") ?? container.id.slice(0, 12);
@@ -57,15 +58,24 @@ export function ContainerCard({ container }: ContainerCardProps) {
               ))}
             </div>
           )}
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => setShowLogs((v) => !v)}>
-              {t("viewLogs")}
+          <div className="flex gap-1">
+            <Button
+              size="icon"
+              variant="ghost"
+              aria-label={t("viewLogs")}
+              onClick={() => router.push(`/logs/${container.id}`)}
+            >
+              <ScrollText className="size-4" />
             </Button>
-            <Button size="sm" variant="outline" onClick={() => setReplaceOpen(true)}>
-              {t("replace")}
+            <Button
+              size="icon"
+              variant="ghost"
+              aria-label={t("replace")}
+              onClick={() => setReplaceOpen(true)}
+            >
+              <RefreshCw className="size-4" />
             </Button>
           </div>
-          {showLogs && <LogViewer containerId={container.id} />}
         </CardContent>
       </Card>
       <ReplaceDialog containerId={container.id} open={replaceOpen} onOpenChange={setReplaceOpen} />
