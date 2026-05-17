@@ -27,6 +27,7 @@ RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nestjs
 
 COPY --from=builder --chown=nestjs:nodejs /app/apps/api/dist ./dist
+COPY --from=builder --chown=nestjs:nodejs /app/apps/api/configs ./configs
 COPY --from=builder --chown=nestjs:nodejs /app/apps/api/package.json ./package.json
 
 RUN pnpm install --prod --frozen-lockfile
