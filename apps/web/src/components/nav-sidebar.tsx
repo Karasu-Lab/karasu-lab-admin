@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Container, Image as ImageIcon, LayoutDashboard } from "lucide-react";
@@ -22,12 +23,19 @@ export function NavSidebar() {
           key={href}
           href={href}
           className={cn(
-            "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted",
-            pathname === href && "bg-muted text-foreground",
+            "relative flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted/50",
+            pathname === href && "text-foreground",
           )}
         >
-          <Icon className="size-4" />
-          {label}
+          {pathname === href && (
+            <motion.div
+              layoutId="nav-highlight"
+              className="absolute inset-0 rounded-md bg-muted"
+              transition={{ type: "spring", stiffness: 400, damping: 35 }}
+            />
+          )}
+          <Icon className="relative z-10 size-4" />
+          <span className="relative z-10">{label}</span>
         </Link>
       ))}
     </aside>
