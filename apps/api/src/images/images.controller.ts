@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Sse } from "@nestjs/common";
+import { Controller, Get, Query, Sse } from "@nestjs/common";
 import { Observable } from "rxjs";
 import Docker from "dockerode";
 import { ImagesService } from "./images.service.js";
@@ -14,8 +14,8 @@ export class ImagesController {
   }
 
   @Sse("pull")
-  @Post("pull")
-  pullImage(@Body() dto: PullImageDto): Observable<MessageEvent> {
+  @Get("pull")
+  pullImage(@Query() dto: PullImageDto): Observable<MessageEvent> {
     return this.imagesService.pullImage(dto.image);
   }
 }
