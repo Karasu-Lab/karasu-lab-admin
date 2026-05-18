@@ -45,8 +45,10 @@
     "editTag": "Edit Tag",
     "deleteConfirm": "Are you sure you want to delete this image?",
     "noImages": "No images available",
+    "refresh": "Refresh",
     "pull": {
       "title": "Pull Image",
+      "description": "Pull an image from a container registry by name and tag.",
       "image": "Image Name",
       "imagePlaceholder": "e.g. nginx:latest",
       "start": "Pull",

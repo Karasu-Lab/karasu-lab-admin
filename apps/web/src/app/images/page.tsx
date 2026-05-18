@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { NavSidebar } from "@/components/nav-sidebar";
-import { PullProgress } from "@/components/pull-progress";
+import { ImagePullForm } from "@/components/image-pull-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, RefreshCw, Trash2 } from "lucide-react";
 
 interface ImageInfo {
   Id: string;
@@ -55,9 +55,6 @@ export default function ImagesPage() {
   const t = useTranslations("Images");
   const [images, setImages] = useState<ImageInfo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [pullImage, setPullImage] = useState("");
-  const [pulling, setPulling] = useState(false);
-  const [activePull, setActivePull] = useState<string | null>(null);
   const [editTarget, setEditTarget] = useState<EditTarget | null>(null);
   const [editRepo, setEditRepo] = useState("");
   const [editTag, setEditTag] = useState("");
@@ -78,19 +75,6 @@ export default function ImagesPage() {
   useEffect(() => {
     void loadImages();
   }, []);
-
-  const handlePull = () => {
-    if (!pullImage.trim()) return;
-    setActivePull(pullImage.trim());
-    setPulling(true);
-  };
-
-  const handlePullDone = () => {
-    setPulling(false);
-    setActivePull(null);
-    setPullImage("");
-    void loadImages();
-  };
 
   const handleDelete = async (img: ImageInfo) => {
     if (!window.confirm(t("deleteConfirm"))) return;
@@ -119,24 +103,19 @@ export default function ImagesPage() {
     <div className="flex flex-1">
       <NavSidebar />
       <main className="flex-1 p-6 space-y-6">
-        <h1 className="text-2xl font-bold">{t("title")}</h1>
-
-        <div className="space-y-2 max-w-sm">
-          <Label htmlFor="pull-image">{t("pull.image")}</Label>
-          <div className="flex gap-2">
-            <Input
-              id="pull-image"
-              placeholder={t("pull.imagePlaceholder")}
-              value={pullImage}
-              onChange={(e) => setPullImage(e.target.value)}
-              disabled={pulling}
-            />
-            <Button onClick={handlePull} disabled={pulling || !pullImage.trim()}>
-              {t("pull.start")}
-            </Button>
-          </div>
-          {activePull && <PullProgress imageName={activePull} onDone={handlePullDone} />}
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label={t("refresh")}
+            onClick={() => void loadImages()}
+          >
+            <RefreshCw className="size-4" />
+          </Button>
         </div>
+
+        <ImagePullForm onDone={() => void loadImages()} />
 
         {loading && (
           <Table>

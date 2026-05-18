@@ -45,8 +45,10 @@
     "editTag": "タグ編集",
     "deleteConfirm": "このイメージを削除しますか？",
     "noImages": "利用可能なイメージなし",
+    "refresh": "更新",
     "pull": {
       "title": "イメージの取得",
+      "description": "レジストリからイメージ名とタグを指定して取得します。",
       "image": "イメージ名",
       "imagePlaceholder": "例: nginx:latest",
       "start": "取得",
