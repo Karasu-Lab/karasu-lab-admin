@@ -91,7 +91,7 @@ export function ContainerUpdatePanel({ containerId }: ContainerUpdatePanelProps)
   if (layers.size === 0) return null;
 
   return (
-    <div className="max-w-xl mb-4">
+    <div className="w-80 shrink-0">
       <SectionHeader title="Pull Progress" />
       {Array.from(layers.entries()).map(([layerId, layer]) => (
         <LayerRow key={layerId} layerId={layerId} layer={layer} />
