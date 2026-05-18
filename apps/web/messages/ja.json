@@ -75,7 +75,8 @@
     "source": "ソース",
     "destination": "マウント先",
     "notFound": "コンテナが見つかりません",
-    "viewLogs": "ログ表示"
+    "viewLogs": "ログ表示",
+    "maximizeLogs": "ログを最大化"
   },
   "Logs": {
     "title": "ログ",

@@ -3,7 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { NavSidebar } from "@/components/nav-sidebar";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { ContainerUpdatePanel } from "@/components/container-update-panel";
+import { ContainerDetailSidebar } from "@/components/container-detail-sidebar";
 import { ContainerUpdateButton } from "@/components/container-update-button";
 import { apiFetch } from "@/lib/api-fetch";
 import { cn } from "@/lib/utils";
@@ -211,7 +211,7 @@ export default async function ContainerDetailPage({ params }: Props) {
               </>
             )}
           </div>
-          <ContainerUpdatePanel containerId={id} />
+          <ContainerDetailSidebar containerId={id} />
         </div>
       </main>
     </div>

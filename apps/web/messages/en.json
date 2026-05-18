@@ -75,7 +75,8 @@
     "source": "Source",
     "destination": "Destination",
     "notFound": "Container not found",
-    "viewLogs": "View Logs"
+    "viewLogs": "View Logs",
+    "maximizeLogs": "Maximize logs"
   },
   "Logs": {
     "title": "Logs",
