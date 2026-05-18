@@ -1,6 +1,7 @@
 services:
   api:
     image: hashibutogarasu/karasu-lab-admin-api:nightly
+    container_name: karasu-lab-admin-api
     restart: unless-stopped
     ports:
       - "8084:3001"
