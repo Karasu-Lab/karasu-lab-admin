@@ -17,13 +17,13 @@ RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
-COPY --from=installer /app/node_modules ./node_modules
+COPY --from=installer /app/ .
 COPY --from=pruner /app/out/full/ .
 RUN pnpm --filter @karasu-lab/api run build
 
 FROM base AS deployer
 WORKDIR /app
-COPY --from=installer /app/node_modules ./node_modules
+COPY --from=installer /app/ .
 COPY --from=pruner /app/out/full/ .
 RUN pnpm --filter @karasu-lab/api deploy --prod /app/deploy
 
