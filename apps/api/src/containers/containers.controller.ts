@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, Sse } from "@nestjs/common";
+import { Controller, Get, Post, Body, HttpCode, Param, Query, Sse } from "@nestjs/common";
 import { Observable } from "rxjs";
 import Docker from "dockerode";
 import { ContainersService } from "./containers.service.js";
@@ -28,6 +28,12 @@ export class ContainersController {
   @Post(":id/stop")
   stopContainer(@Param("id") id: string): Promise<void> {
     return this.containersService.stopContainer(id);
+  }
+
+  @Post(":id/update")
+  @HttpCode(202)
+  updateContainer(@Param("id") id: string): void {
+    void this.containersService.updateContainer(id);
   }
 
   @Sse(":id/logs")
