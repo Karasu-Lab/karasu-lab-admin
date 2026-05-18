@@ -24,6 +24,7 @@
     "stop": "停止",
     "refresh": "更新",
     "update": "更新して再起動",
+    "pullWithTag": "タグを指定して取得",
     "viewLogs": "ログ表示",
     "noContainers": "コンテナなし",
     "updateProgress": {

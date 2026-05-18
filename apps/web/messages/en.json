@@ -24,6 +24,7 @@
     "stop": "Stop",
     "refresh": "Refresh",
     "update": "Update and Restart",
+    "pullWithTag": "Pull with Tag",
     "viewLogs": "View Logs",
     "noContainers": "No containers",
     "updateProgress": {

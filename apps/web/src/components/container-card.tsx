@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { AlertCircle, CheckCircle2, Circle, Download, Loader2, RefreshCw } from "lucide-react";
 import { useContainerUpdate } from "@/hooks/use-container-update";
 import { ContainerToggleButton } from "./container-toggle-button";
+import { ContainerTagPullButton } from "./container-tag-pull-button";
 
 const UPDATE_STATUS_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
   pulling: Download,
@@ -105,6 +106,11 @@ export function ContainerCard({ container }: ContainerCardProps) {
             />
             <TooltipContent>{t("update")}</TooltipContent>
           </Tooltip>
+          <ContainerTagPullButton
+            containerId={container.id}
+            currentImage={container.image}
+            disabled={pending}
+          />
           {StatusIconComponent && status && (
             <Tooltip>
               <TooltipTrigger className="ml-auto cursor-default">
