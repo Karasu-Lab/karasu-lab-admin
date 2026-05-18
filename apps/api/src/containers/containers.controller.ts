@@ -40,6 +40,11 @@ export class ContainersController {
     return this.containersService.streamLogs(id, query);
   }
 
+  @Sse(":id/pull")
+  streamPullUpdate(@Param("id") id: string, @Query("tag") tag?: string): Observable<MessageEvent> {
+    return this.containersService.streamPullUpdate(id, tag);
+  }
+
   @Sse(":id/replace")
   @Post(":id/replace")
   replaceContainer(

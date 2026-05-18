@@ -166,6 +166,84 @@ export class ContainersService {
     });
   }
 
+  /** Pulls the image with an optional tag override, then restarts the container. Streams progress via SSE. */
+  streamPullUpdate(id: string, tag?: string): Observable<MessageEvent> {
+    return new Observable((subscriber) => {
+      const progress = (status: string, detail?: string) => {
+        subscriber.next({
+          type: "progress",
+          data: JSON.stringify({ status, detail }),
+        } as MessageEvent);
+      };
+      const layer = (layerId: string, status: string, prog?: string) => {
+        subscriber.next({
+          type: "layer",
+          data: JSON.stringify({ layerId, status, progress: prog }),
+        } as MessageEvent);
+      };
+
+      void (async () => {
+        try {
+          const inspectInfo = await this.inspectContainer(id);
+          const image = inspectInfo.Config.Image;
+          const name = inspectInfo.Name.replace(/^\//, "");
+
+          const [repo] = image.split(":");
+          const targetImage = tag ? `${repo}:${tag}` : image;
+
+          progress("pulling", targetImage);
+          await new Promise<void>((resolve, reject) => {
+            void this.docker.client.pull(
+              targetImage,
+              (err: Error | null, stream: NodeJS.ReadableStream) => {
+                if (err) {
+                  reject(err);
+                  return;
+                }
+                this.docker.client.modem.followProgress(
+                  stream,
+                  (finishErr: Error | null) => {
+                    if (finishErr) {
+                      reject(finishErr);
+                      return;
+                    }
+                    resolve();
+                  },
+                  (event: { status: string; id?: string; progress?: string }) => {
+                    if (event.id) {
+                      layer(event.id, event.status, event.progress);
+                    }
+                  },
+                );
+              },
+            );
+          });
+
+          progress("stopping");
+          const oldContainer = this.docker.client.getContainer(id);
+          await oldContainer.stop();
+          await oldContainer.remove({ force: true });
+
+          progress("starting");
+          const newContainer = await this.docker.client.createContainer({
+            name,
+            Image: targetImage,
+            HostConfig: inspectInfo.HostConfig,
+            Env: inspectInfo.Config.Env ?? undefined,
+            ExposedPorts: inspectInfo.Config.ExposedPorts,
+          });
+          await newContainer.start();
+
+          progress("done");
+          subscriber.complete();
+        } catch (e) {
+          progress("error", e instanceof Error ? e.message : String(e));
+          subscriber.complete();
+        }
+      })();
+    });
+  }
+
   /** Pulls a new image, stops the old container, then starts a new one with the same config. Streams progress via SSE. */
   replaceContainer(id: string, dto: ReplaceContainerDto): Observable<MessageEvent> {
     return new Observable((subscriber) => {
