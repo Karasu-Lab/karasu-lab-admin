@@ -20,9 +20,12 @@
     "status": "ステータス",
     "ports": "ポート",
     "actions": "操作",
+    "start": "起動",
+    "stop": "停止",
+    "refresh": "更新",
     "viewLogs": "ログ表示",
     "replace": "置換",
-    "noContainers": "稼働中のコンテナなし",
+    "noContainers": "コンテナなし",
     "logs": {
       "title": "コンテナログ",
       "connecting": "接続中...",
@@ -66,6 +69,20 @@
       "confirm": "保存",
       "cancel": "キャンセル"
     }
+  },
+  "ContainerDetail": {
+    "title": "コンテナ詳細",
+    "name": "名前",
+    "image": "イメージ",
+    "status": "ステータス",
+    "created": "作成日時",
+    "ports": "ポート",
+    "environment": "環境変数",
+    "mounts": "マウント",
+    "source": "ソース",
+    "destination": "マウント先",
+    "notFound": "コンテナが見つかりません",
+    "viewLogs": "ログ表示"
   },
   "Logs": {
     "title": "ログ",

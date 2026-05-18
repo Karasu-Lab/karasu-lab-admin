@@ -20,9 +20,12 @@
     "status": "Status",
     "ports": "Ports",
     "actions": "Actions",
+    "start": "Start",
+    "stop": "Stop",
+    "refresh": "Refresh",
     "viewLogs": "View Logs",
     "replace": "Replace",
-    "noContainers": "No running containers",
+    "noContainers": "No containers",
     "logs": {
       "title": "Container Logs",
       "connecting": "Connecting...",
@@ -66,6 +69,20 @@
       "confirm": "Save",
       "cancel": "Cancel"
     }
+  },
+  "ContainerDetail": {
+    "title": "Container Detail",
+    "name": "Name",
+    "image": "Image",
+    "status": "Status",
+    "created": "Created",
+    "ports": "Ports",
+    "environment": "Environment Variables",
+    "mounts": "Mounts",
+    "source": "Source",
+    "destination": "Destination",
+    "notFound": "Container not found",
+    "viewLogs": "View Logs"
   },
   "Logs": {
     "title": "Logs",
