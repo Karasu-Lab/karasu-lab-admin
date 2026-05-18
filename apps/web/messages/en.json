@@ -84,7 +84,8 @@
     "empty": "No log output",
     "autoScroll": "Auto Scroll",
     "copyAll": "Copy All",
-    "clear": "Clear"
+    "clear": "Clear",
+    "maximize": "Maximize"
   },
   "Common": {
     "loading": "Loading...",

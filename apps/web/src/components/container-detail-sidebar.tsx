@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
-import { Maximize2 } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
-import { Button } from "@/components/ui/button";
 import { LogViewer } from "@/components/log-viewer";
+import { LogToolbar } from "@/components/log-toolbar";
+import { LogMaximizeButton } from "@/components/log-buttons";
 import { ContainerUpdatePanel } from "@/components/container-update-panel";
 import { useContainerUpdate } from "@/hooks/use-container-update";
 
@@ -15,12 +15,11 @@ interface ContainerDetailSidebarProps {
 }
 
 export function ContainerDetailSidebar({ containerId }: ContainerDetailSidebarProps) {
-  const t = useTranslations("ContainerDetail");
   const tLogs = useTranslations("Logs");
   const router = useRouter();
   const { layers } = useContainerUpdate(containerId);
   const [lines, setLines] = useState<string[]>([]);
-  const [autoScroll] = useState(true);
+  const [autoScroll, setAutoScroll] = useState(true);
   const [maximizing, setMaximizing] = useState(false);
 
   if (layers.size > 0) {
@@ -44,26 +43,28 @@ export function ContainerDetailSidebar({ containerId }: ContainerDetailSidebarPr
         )}
       </AnimatePresence>
 
-      <div className="w-80 shrink-0">
-        <div className="flex items-center justify-between pt-4 pb-1">
+      <div className="flex-1 min-w-[440px] flex flex-col min-h-0">
+        <div className="flex items-center justify-between pt-4 pb-1 shrink-0">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             {tLogs("title")}
           </p>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="size-6"
-            aria-label={t("maximizeLogs")}
-            onClick={() => setMaximizing(true)}
-          >
-            <Maximize2 className="size-3.5" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <LogToolbar
+              compact
+              lines={lines}
+              autoScroll={autoScroll}
+              onAutoScrollChange={setAutoScroll}
+              onClear={() => setLines([])}
+            />
+            <LogMaximizeButton compact onClick={() => setMaximizing(true)} />
+          </div>
         </div>
         <LogViewer
           containerId={containerId}
           lines={lines}
           autoScroll={autoScroll}
           onLine={(line) => setLines((prev) => [...prev, line])}
+          className="max-h-[calc(100vh-10rem)] min-h-64"
         />
       </div>
     </>
