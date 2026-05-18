@@ -54,7 +54,9 @@ export default async function DashboardPage() {
               <CardTitle className="text-base">{t("runningContainers")}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">{containers.length}</p>
+              <p className="text-3xl font-bold">
+                {containers.filter((c) => c.state === "running").length}
+              </p>
             </CardContent>
           </Card>
           <Card>

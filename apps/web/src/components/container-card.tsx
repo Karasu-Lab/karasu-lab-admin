@@ -6,8 +6,9 @@ import { useRouter } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ScrollText, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { ReplaceDialog } from "./replace-dialog";
+import { ContainerToggleButton } from "./container-toggle-button";
 
 interface ContainerPort {
   IP: string;
@@ -38,7 +39,7 @@ export function ContainerCard({ container }: ContainerCardProps) {
 
   return (
     <>
-      <Card>
+      <Card className="cursor-pointer" onClick={() => router.push(`/containers/${container.id}`)}>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm font-medium">{displayName}</CardTitle>
@@ -47,7 +48,7 @@ export function ContainerCard({ container }: ContainerCardProps) {
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="flex flex-col flex-1 gap-3">
           <p className="text-xs text-muted-foreground">{container.image}</p>
           {container.ports.length > 0 && (
             <div className="flex flex-wrap gap-1">
@@ -58,20 +59,16 @@ export function ContainerCard({ container }: ContainerCardProps) {
               ))}
             </div>
           )}
-          <div className="flex gap-1">
-            <Button
-              size="icon"
-              variant="ghost"
-              aria-label={t("viewLogs")}
-              onClick={() => router.push(`/logs/${container.id}`)}
-            >
-              <ScrollText className="size-4" />
-            </Button>
+          <div className="flex gap-1 mt-auto">
+            <ContainerToggleButton containerId={container.id} state={container.state} />
             <Button
               size="icon"
               variant="ghost"
               aria-label={t("replace")}
-              onClick={() => setReplaceOpen(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setReplaceOpen(true);
+              }}
             >
               <RefreshCw className="size-4" />
             </Button>
