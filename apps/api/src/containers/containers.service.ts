@@ -13,7 +13,7 @@ export class ContainersService {
 
   /** Returns a list of all running containers. */
   async listContainers(): Promise<ContainerInfoDto[]> {
-    const containers = await this.docker.client.listContainers({ all: false });
+    const containers = await this.docker.client.listContainers({ all: true });
     return containers.map((c) => ({
       id: c.Id,
       names: c.Names,
@@ -29,6 +29,24 @@ export class ContainersService {
         Type: p.Type,
       })),
     }));
+  }
+
+  /** Starts a stopped container. */
+  async startContainer(id: string): Promise<void> {
+    try {
+      await this.docker.client.getContainer(id).start();
+    } catch {
+      throw new NotFoundException(`Container ${id} not found`);
+    }
+  }
+
+  /** Stops a running container. */
+  async stopContainer(id: string): Promise<void> {
+    try {
+      await this.docker.client.getContainer(id).stop();
+    } catch {
+      throw new NotFoundException(`Container ${id} not found`);
+    }
   }
 
   /** Returns detailed inspection data for a single container. */

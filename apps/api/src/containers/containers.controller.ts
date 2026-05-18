@@ -20,6 +20,16 @@ export class ContainersController {
     return this.containersService.inspectContainer(id);
   }
 
+  @Post(":id/start")
+  startContainer(@Param("id") id: string): Promise<void> {
+    return this.containersService.startContainer(id);
+  }
+
+  @Post(":id/stop")
+  stopContainer(@Param("id") id: string): Promise<void> {
+    return this.containersService.stopContainer(id);
+  }
+
   @Sse(":id/logs")
   streamLogs(@Param("id") id: string, @Query() query: LogQueryDto): Observable<MessageEvent> {
     return this.containersService.streamLogs(id, query);
