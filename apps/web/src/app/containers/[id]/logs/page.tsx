@@ -9,11 +9,11 @@ import { LogToolbar } from "@/components/log-toolbar";
 import { ChevronLeft } from "lucide-react";
 
 interface Props {
-  params: Promise<{ containerId: string }>;
+  params: Promise<{ id: string }>;
 }
 
-export default function LogsPage({ params }: Props) {
-  const { containerId } = use(params);
+export default function ContainerLogsPage({ params }: Props) {
+  const { id } = use(params);
   const t = useTranslations("Logs");
   const [lines, setLines] = useState<string[]>([]);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -25,7 +25,7 @@ export default function LogsPage({ params }: Props) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Link
-              href="/containers"
+              href={`/containers/${id}`}
               className="inline-flex items-center justify-center rounded-md p-2 text-sm hover:bg-muted transition-colors"
             >
               <ChevronLeft className="size-4" />
@@ -41,7 +41,7 @@ export default function LogsPage({ params }: Props) {
         </div>
         <div className="flex-1 min-h-0 min-w-0">
           <LogViewer
-            containerId={containerId}
+            containerId={id}
             tail={500}
             lines={lines}
             autoScroll={autoScroll}
