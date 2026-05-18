@@ -21,4 +21,8 @@ export class AppConfigService {
   get corsOrigin(): string {
     return this.config.server.corsOrigin;
   }
+
+  get cloudflare() {
+    return this.config.cloudflare;
+  }
 }

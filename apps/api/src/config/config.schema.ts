@@ -11,6 +11,13 @@ export const AppConfigSchema = z.object({
       default: z.string().default("/var/run/docker.sock"),
     }),
   }),
+  cloudflare: z
+    .object({
+      teamDomain: z.string(),
+      audTag: z.string(),
+      skipInDev: z.boolean().default(true),
+    })
+    .optional(),
 });
 
 export type AppConfig = z.infer<typeof AppConfigSchema>;
