@@ -21,15 +21,12 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
-    "@nestjs/platform-socket.io": "^11.1.21",
-    "@nestjs/websockets": "^11.1.21",
     "cloudflare-access": "^1.1.0",
     "dockerode": "^4.0.2",
     "js-yaml": "^4.1.1",
     "nestjs-zod": "^5.4.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "socket.io": "^4.8.3",
     "zod": "^4.4.3"
   },
   "devDependencies": {

@@ -1,45 +1,55 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
-import { connectSocket, disconnectSocket, socket } from "@/lib/socket";
+import { triggerUpdate, onProgress, onLayer } from "@/lib/update-stream";
 
-interface UpdateProgressEvent {
-  containerId: string;
+export interface LayerState {
   status: string;
-  detail?: string;
+  progress?: string;
 }
 
 export function useContainerUpdate(containerId: string) {
   const router = useRouter();
   const [status, setStatus] = useState<string | null>(null);
   const [detail, setDetail] = useState<string | undefined>();
+  const [layers, setLayers] = useState<Map<string, LayerState>>(new Map());
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    connectSocket();
-
-    const handler = (data: UpdateProgressEvent) => {
+    const offProgress = onProgress((data) => {
       if (data.containerId !== containerId) return;
       setStatus(data.status);
       setDetail(data.detail);
+      if (data.status === "stopping") {
+        setLayers(new Map());
+      }
       if (data.status === "done" || data.status === "error") {
-        setTimeout(() => {
+        timerRef.current = setTimeout(() => {
           setStatus(null);
           setDetail(undefined);
+          setLayers(new Map());
           router.refresh();
         }, 800);
       }
-    };
+    });
 
-    socket.on("update-progress", handler);
+    const offLayer = onLayer((data) => {
+      if (data.containerId !== containerId) return;
+      setLayers((prev) =>
+        new Map(prev).set(data.layerId, { status: data.status, progress: data.progress }),
+      );
+    });
+
     return () => {
-      socket.off("update-progress", handler);
-      disconnectSocket();
+      offProgress();
+      offLayer();
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, [containerId, router]);
 
-  const trigger = useCallback(async () => {
-    await fetch(`/api/containers/${containerId}/update`, { method: "POST" });
+  const trigger = useCallback(() => {
+    triggerUpdate(containerId);
   }, [containerId]);
 
   return {
@@ -47,5 +57,6 @@ export function useContainerUpdate(containerId: string) {
     status,
     detail,
     pending: !!status && status !== "done" && status !== "error",
+    layers,
   };
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, HttpCode, Param, Query, Sse } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Query, Sse } from "@nestjs/common";
 import { Observable } from "rxjs";
 import Docker from "dockerode";
 import { ContainersService } from "./containers.service.js";
@@ -30,10 +30,9 @@ export class ContainersController {
     return this.containersService.stopContainer(id);
   }
 
-  @Post(":id/update")
-  @HttpCode(202)
-  updateContainer(@Param("id") id: string): void {
-    void this.containersService.updateContainer(id);
+  @Sse(":id/update")
+  streamUpdateContainer(@Param("id") id: string): Observable<MessageEvent> {
+    return this.containersService.streamUpdateContainer(id);
   }
 
   @Sse(":id/logs")

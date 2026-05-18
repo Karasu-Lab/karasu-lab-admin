@@ -12,7 +12,7 @@ import {
   PackageCheck,
   ShieldCheck,
 } from "lucide-react";
-import { useContainerLayers, type LayerState } from "@/hooks/use-container-layers";
+import { useContainerUpdate, type LayerState } from "@/hooks/use-container-update";
 
 interface ContainerUpdatePanelProps {
   containerId: string;
@@ -86,7 +86,7 @@ function LayerRow({ layerId, layer }: { layerId: string; layer: LayerState }) {
 }
 
 export function ContainerUpdatePanel({ containerId }: ContainerUpdatePanelProps) {
-  const { layers } = useContainerLayers(containerId);
+  const { layers } = useContainerUpdate(containerId);
 
   if (layers.size === 0) return null;
 

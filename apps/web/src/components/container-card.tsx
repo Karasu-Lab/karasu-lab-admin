@@ -89,7 +89,7 @@ export function ContainerCard({ container }: ContainerCardProps) {
             disabled={pending}
             onClick={(e) => {
               e.stopPropagation();
-              void trigger();
+              trigger();
             }}
           >
             {pending ? (

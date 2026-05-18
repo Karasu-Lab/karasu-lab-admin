@@ -4,16 +4,12 @@ import { PassThrough } from "stream";
 import Docker from "dockerode";
 import { DockerService } from "../docker/docker.service.js";
 import { ContainerInfoDto } from "./dto/container-info.dto.js";
-import { ContainersGateway } from "./containers.gateway.js";
 import { LogQueryDto } from "./dto/log-query.dto.js";
 import { ReplaceContainerDto } from "./dto/replace-container.dto.js";
 
 @Injectable()
 export class ContainersService {
-  constructor(
-    private readonly docker: DockerService,
-    private readonly gateway: ContainersGateway,
-  ) {}
+  constructor(private readonly docker: DockerService) {}
 
   /** Returns a list of all running containers. */
   async listContainers(): Promise<ContainerInfoDto[]> {
@@ -95,60 +91,79 @@ export class ContainersService {
     });
   }
 
-  /** Pulls the current image again, stops the old container, removes it, then starts a new one with the same config. Streams progress via WebSocket. */
-  async updateContainer(id: string): Promise<void> {
-    try {
-      const inspectInfo = await this.inspectContainer(id);
-      const image = inspectInfo.Config.Image;
-      const name = inspectInfo.Name.replace(/^\//, "");
+  /** Pulls the current image again, stops the old container, removes it, then starts a new one with the same config. Streams progress via SSE. */
+  streamUpdateContainer(id: string): Observable<MessageEvent> {
+    return new Observable((subscriber) => {
+      const progress = (status: string, detail?: string) => {
+        subscriber.next({
+          type: "progress",
+          data: JSON.stringify({ status, detail }),
+        } as MessageEvent);
+      };
+      const layer = (layerId: string, status: string, prog?: string) => {
+        subscriber.next({
+          type: "layer",
+          data: JSON.stringify({ layerId, status, progress: prog }),
+        } as MessageEvent);
+      };
 
-      this.gateway.emitUpdateProgress(id, "pulling", image);
-      await new Promise<void>((resolve, reject) => {
-        void this.docker.client.pull(image, (err: Error | null, stream: NodeJS.ReadableStream) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          this.docker.client.modem.followProgress(
-            stream,
-            (finishErr: Error | null) => {
-              if (finishErr) {
-                reject(finishErr);
-                return;
-              }
-              resolve();
-            },
-            (event: { status: string; id?: string; progress?: string }) => {
-              if (event.id) {
-                this.gateway.emitLayerProgress(id, event.id, event.status, event.progress);
-              }
-              if (event.progress) {
-                this.gateway.emitUpdateProgress(id, "pulling", event.progress);
-              }
-            },
-          );
-        });
-      });
+      void (async () => {
+        try {
+          const inspectInfo = await this.inspectContainer(id);
+          const image = inspectInfo.Config.Image;
+          const name = inspectInfo.Name.replace(/^\//, "");
 
-      this.gateway.emitUpdateProgress(id, "stopping");
-      const oldContainer = this.docker.client.getContainer(id);
-      await oldContainer.stop();
-      await oldContainer.remove({ force: true });
+          progress("pulling", image);
+          await new Promise<void>((resolve, reject) => {
+            void this.docker.client.pull(
+              image,
+              (err: Error | null, stream: NodeJS.ReadableStream) => {
+                if (err) {
+                  reject(err);
+                  return;
+                }
+                this.docker.client.modem.followProgress(
+                  stream,
+                  (finishErr: Error | null) => {
+                    if (finishErr) {
+                      reject(finishErr);
+                      return;
+                    }
+                    resolve();
+                  },
+                  (event: { status: string; id?: string; progress?: string }) => {
+                    if (event.id) {
+                      layer(event.id, event.status, event.progress);
+                    }
+                  },
+                );
+              },
+            );
+          });
 
-      this.gateway.emitUpdateProgress(id, "starting");
-      const newContainer = await this.docker.client.createContainer({
-        name,
-        Image: image,
-        HostConfig: inspectInfo.HostConfig,
-        Env: inspectInfo.Config.Env ?? undefined,
-        ExposedPorts: inspectInfo.Config.ExposedPorts,
-      });
-      await newContainer.start();
+          progress("stopping");
+          const oldContainer = this.docker.client.getContainer(id);
+          await oldContainer.stop();
+          await oldContainer.remove({ force: true });
 
-      this.gateway.emitUpdateProgress(id, "done");
-    } catch (e) {
-      this.gateway.emitUpdateProgress(id, "error", e instanceof Error ? e.message : String(e));
-    }
+          progress("starting");
+          const newContainer = await this.docker.client.createContainer({
+            name,
+            Image: image,
+            HostConfig: inspectInfo.HostConfig,
+            Env: inspectInfo.Config.Env ?? undefined,
+            ExposedPorts: inspectInfo.Config.ExposedPorts,
+          });
+          await newContainer.start();
+
+          progress("done");
+          subscriber.complete();
+        } catch (e) {
+          progress("error", e instanceof Error ? e.message : String(e));
+          subscriber.complete();
+        }
+      })();
+    });
   }
 
   /** Pulls a new image, stops the old container, then starts a new one with the same config. Streams progress via SSE. */

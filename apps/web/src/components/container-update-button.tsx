@@ -41,7 +41,7 @@ export function ContainerUpdateButton({ containerId }: ContainerUpdateButtonProp
         variant="ghost"
         aria-label={t("update")}
         disabled={pending}
-        onClick={() => void trigger()}
+        onClick={() => trigger()}
       >
         {pending ? <Loader2 className="size-4 animate-spin" /> : <RefreshCw className="size-4" />}
       </Button>
