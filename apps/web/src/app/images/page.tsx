@@ -22,6 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Pencil, Trash2 } from "lucide-react";
 
 interface ImageInfo {
@@ -53,6 +54,7 @@ function shortId(id: string): string {
 export default function ImagesPage() {
   const t = useTranslations("Images");
   const [images, setImages] = useState<ImageInfo[]>([]);
+  const [loading, setLoading] = useState(true);
   const [pullImage, setPullImage] = useState("");
   const [pulling, setPulling] = useState(false);
   const [activePull, setActivePull] = useState<string | null>(null);
@@ -68,6 +70,8 @@ export default function ImagesPage() {
       if (Array.isArray(data)) setImages(data as ImageInfo[]);
     } catch {
       return;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,9 +138,46 @@ export default function ImagesPage() {
           {activePull && <PullProgress imageName={activePull} onDone={handlePullDone} />}
         </div>
 
-        {images.length === 0 ? (
+        {loading && (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t("repository")}</TableHead>
+                <TableHead>{t("tag")}</TableHead>
+                <TableHead>{t("size")}</TableHead>
+                <TableHead>{t("created")}</TableHead>
+                <TableHead>{t("actions")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell>
+                    <Skeleton className="h-4 w-36" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-16" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-14" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-20" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-7 w-16" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+
+        {!loading && images.length === 0 && (
           <p className="text-muted-foreground">{t("noImages")}</p>
-        ) : (
+        )}
+
+        {!loading && images.length > 0 && (
           <Table>
             <TableHeader>
               <TableRow>
