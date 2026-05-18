@@ -9,11 +9,7 @@ import { AppConfigService } from "../config/config.service.js";
       provide: APP_GUARD,
       useFactory: (config: AppConfigService) => {
         if (!config.cloudflare) return { canActivate: () => true };
-        return new CloudflareAccessGuard({
-          accessConfig: config.cloudflare,
-          skipInDev: config.cloudflare.skipInDev,
-          environment: process.env.NODE_ENV,
-        });
+        return new CloudflareAccessGuard({ accessConfig: config.cloudflare });
       },
       inject: [AppConfigService],
     },

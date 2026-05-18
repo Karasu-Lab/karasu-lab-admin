@@ -15,7 +15,6 @@ export const AppConfigSchema = z.object({
     .object({
       teamDomain: z.string(),
       audTag: z.string(),
-      skipInDev: z.boolean().default(true),
     })
     .optional(),
 });
