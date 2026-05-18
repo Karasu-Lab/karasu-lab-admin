@@ -4,6 +4,7 @@ import { NavSidebar } from "@/components/nav-sidebar";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { ContainerUpdatePanel } from "@/components/container-update-panel";
+import { ContainerUpdateButton } from "@/components/container-update-button";
 import { apiFetch } from "@/lib/api-fetch";
 import { cn } from "@/lib/utils";
 import {
@@ -129,17 +130,19 @@ export default async function ContainerDetailPage({ params }: Props) {
             </Link>
             <h1 className="text-2xl font-bold">{displayName}</h1>
           </div>
-          <Link
-            href={`/containers/${id}/logs`}
-            aria-label={t("viewLogs")}
-            className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
-          >
-            <ScrollText className="size-4" />
-          </Link>
+          <div className="flex items-center gap-1">
+            <ContainerUpdateButton containerId={id} />
+            <Link
+              href={`/containers/${id}/logs`}
+              aria-label={t("viewLogs")}
+              className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
+            >
+              <ScrollText className="size-4" />
+            </Link>
+          </div>
         </div>
 
         <ContainerUpdatePanel containerId={id} />
-
         <div className="max-w-xl">
           <SectionHeader title={t("status")} />
 
