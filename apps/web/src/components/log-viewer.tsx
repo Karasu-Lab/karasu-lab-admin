@@ -39,11 +39,16 @@ export function LogViewer({ containerId, tail = 100, lines, autoScroll, onLine }
   }, [lines, autoScroll]);
 
   return (
-    <ScrollArea className="h-full max-h-[calc(100vh-10rem)] min-h-96 w-full rounded-md border bg-muted/30 p-4 font-mono text-xs">
-      {!connected && <p className="text-muted-foreground">{t("connecting")}</p>}
-      {connected && lines.length === 0 && <p className="text-muted-foreground">{t("empty")}</p>}
+    <ScrollArea className="h-full max-h-[calc(100vh-10rem)] min-h-96 w-full rounded-md border bg-muted/30 font-mono text-xs">
+      {!connected && <p className="px-4 py-3 text-muted-foreground">{t("connecting")}</p>}
+      {connected && lines.length === 0 && (
+        <p className="px-4 py-3 text-muted-foreground">{t("empty")}</p>
+      )}
       {lines.map((line, i) => (
-        <div key={i} className="whitespace-pre-wrap break-all">
+        <div
+          key={i}
+          className="px-4 py-1.5 border-b border-border last:border-0 whitespace-pre-wrap break-all"
+        >
           {line}
         </div>
       ))}
