@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NavSidebar } from "@/components/nav-sidebar";
+import { apiFetch } from "@/lib/api-fetch";
 
 interface ContainerInfo {
   id: string;
@@ -18,9 +19,7 @@ interface ImageInfo {
 
 async function fetchContainers(): Promise<ContainerInfo[]> {
   try {
-    const res = await fetch(`${process.env.API_URL ?? "http://localhost:3001"}/api/containers`, {
-      cache: "no-store",
-    });
+    const res = await apiFetch("/api/containers", { cache: "no-store" });
     if (!res.ok) return [];
     const data: unknown = await res.json();
     return Array.isArray(data) ? (data as ContainerInfo[]) : [];
@@ -31,9 +30,7 @@ async function fetchContainers(): Promise<ContainerInfo[]> {
 
 async function fetchImages(): Promise<ImageInfo[]> {
   try {
-    const res = await fetch(`${process.env.API_URL ?? "http://localhost:3001"}/api/images`, {
-      cache: "no-store",
-    });
+    const res = await apiFetch("/api/images", { cache: "no-store" });
     if (!res.ok) return [];
     const data: unknown = await res.json();
     return Array.isArray(data) ? (data as ImageInfo[]) : [];

@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { NavSidebar } from "@/components/nav-sidebar";
 import { ContainerCard } from "@/components/container-card";
+import { apiFetch } from "@/lib/api-fetch";
 
 interface ContainerPort {
   IP: string;
@@ -20,9 +21,7 @@ interface ContainerInfo {
 
 async function fetchContainers(): Promise<ContainerInfo[]> {
   try {
-    const res = await fetch(`${process.env.API_URL ?? "http://localhost:3001"}/api/containers`, {
-      cache: "no-store",
-    });
+    const res = await apiFetch("/api/containers", { cache: "no-store" });
     if (!res.ok) return [];
     const data: unknown = await res.json();
     return Array.isArray(data) ? (data as ContainerInfo[]) : [];
