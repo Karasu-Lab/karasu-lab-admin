@@ -23,24 +23,15 @@
     "start": "起動",
     "stop": "停止",
     "refresh": "更新",
+    "update": "更新",
     "viewLogs": "ログ表示",
-    "replace": "置換",
     "noContainers": "コンテナなし",
-    "logs": {
-      "title": "コンテナログ",
-      "connecting": "接続中...",
-      "empty": "ログ出力なし"
-    },
-    "replaceDialog": {
-      "title": "コンテナの置換",
-      "newImage": "新しいイメージ",
-      "newImagePlaceholder": "例: nginx:latest",
-      "confirm": "置換",
-      "cancel": "キャンセル",
-      "pulling": "イメージを取得中...",
-      "stopping": "旧コンテナを停止中...",
-      "starting": "新コンテナを起動中...",
-      "done": "置換完了"
+    "updateProgress": {
+      "pulling": "イメージ取得中...",
+      "stopping": "コンテナ停止中...",
+      "starting": "コンテナ起動中...",
+      "done": "更新完了",
+      "error": "更新失敗"
     }
   },
   "Images": {

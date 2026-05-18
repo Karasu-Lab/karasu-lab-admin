@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { NavSidebar } from "@/components/nav-sidebar";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
+import { ContainerUpdatePanel } from "@/components/container-update-panel";
 import { apiFetch } from "@/lib/api-fetch";
 import { cn } from "@/lib/utils";
 import {
@@ -136,6 +137,8 @@ export default async function ContainerDetailPage({ params }: Props) {
             <ScrollText className="size-4" />
           </Link>
         </div>
+
+        <ContainerUpdatePanel containerId={id} />
 
         <div className="max-w-xl">
           <SectionHeader title={t("status")} />

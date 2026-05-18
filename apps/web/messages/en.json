@@ -23,24 +23,15 @@
     "start": "Start",
     "stop": "Stop",
     "refresh": "Refresh",
+    "update": "Update",
     "viewLogs": "View Logs",
-    "replace": "Replace",
     "noContainers": "No containers",
-    "logs": {
-      "title": "Container Logs",
-      "connecting": "Connecting...",
-      "empty": "No log output"
-    },
-    "replaceDialog": {
-      "title": "Replace Container",
-      "newImage": "New Image",
-      "newImagePlaceholder": "e.g. nginx:latest",
-      "confirm": "Replace",
-      "cancel": "Cancel",
+    "updateProgress": {
       "pulling": "Pulling image...",
-      "stopping": "Stopping old container...",
-      "starting": "Starting new container...",
-      "done": "Replacement complete"
+      "stopping": "Stopping container...",
+      "starting": "Starting container...",
+      "done": "Update complete",
+      "error": "Update failed"
     }
   },
   "Images": {
