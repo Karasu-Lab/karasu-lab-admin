@@ -142,7 +142,7 @@ export default async function ContainerDetailPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="flex gap-6 items-start">
+        <div className="flex gap-6 items-stretch">
           <div className="flex-1 max-w-xl min-w-0">
             <SectionHeader title={t("status")} />
 

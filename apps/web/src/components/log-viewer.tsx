@@ -10,9 +10,17 @@ interface LogViewerProps {
   lines: string[];
   autoScroll: boolean;
   onLine: (line: string) => void;
+  className?: string;
 }
 
-export function LogViewer({ containerId, tail = 100, lines, autoScroll, onLine }: LogViewerProps) {
+export function LogViewer({
+  containerId,
+  tail = 100,
+  lines,
+  autoScroll,
+  onLine,
+  className,
+}: LogViewerProps) {
   const t = useTranslations("Logs");
   const [connected, setConnected] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -39,7 +47,9 @@ export function LogViewer({ containerId, tail = 100, lines, autoScroll, onLine }
   }, [lines, autoScroll]);
 
   return (
-    <ScrollArea className="h-full max-h-[calc(100vh-10rem)] min-h-96 w-full rounded-md border bg-muted/30 font-mono text-xs">
+    <ScrollArea
+      className={`w-full rounded-md border bg-muted/30 font-mono text-xs ${className ?? "h-full max-h-[calc(100vh-10rem)] min-h-96"}`}
+    >
       {!connected && <p className="px-4 py-3 text-muted-foreground">{t("connecting")}</p>}
       {connected && lines.length === 0 && (
         <p className="px-4 py-3 text-muted-foreground">{t("empty")}</p>
