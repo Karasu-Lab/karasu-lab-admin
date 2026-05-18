@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Play, Square } from "lucide-react";
 
 interface ContainerToggleButtonProps {
@@ -26,15 +27,24 @@ export function ContainerToggleButton({ containerId, state }: ContainerToggleBut
     setPending(false);
   };
 
+  const label = isRunning ? t("stop") : t("start");
+
   return (
-    <Button
-      size="icon"
-      variant="ghost"
-      aria-label={isRunning ? t("stop") : t("start")}
-      disabled={pending}
-      onClick={(e) => void handleClick(e)}
-    >
-      {isRunning ? <Square className="size-4" /> : <Play className="size-4" />}
-    </Button>
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label={label}
+            disabled={pending}
+            onClick={(e) => void handleClick(e)}
+          >
+            {isRunning ? <Square className="size-4" /> : <Play className="size-4" />}
+          </Button>
+        }
+      />
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
   );
 }

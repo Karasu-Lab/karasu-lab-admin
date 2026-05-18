@@ -23,7 +23,7 @@
     "start": "Start",
     "stop": "Stop",
     "refresh": "Refresh",
-    "update": "Update",
+    "update": "Update and Restart",
     "viewLogs": "View Logs",
     "noContainers": "No containers",
     "updateProgress": {

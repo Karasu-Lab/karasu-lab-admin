@@ -82,22 +82,29 @@ export function ContainerCard({ container }: ContainerCardProps) {
         )}
         <div className="flex items-center gap-1 mt-auto">
           <ContainerToggleButton containerId={container.id} state={container.state} />
-          <Button
-            size="icon"
-            variant="ghost"
-            aria-label={t("update")}
-            disabled={pending}
-            onClick={(e) => {
-              e.stopPropagation();
-              trigger();
-            }}
-          >
-            {pending ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              <RefreshCw className="size-4" />
-            )}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  aria-label={t("update")}
+                  disabled={pending}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    trigger();
+                  }}
+                >
+                  {pending ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <RefreshCw className="size-4" />
+                  )}
+                </Button>
+              }
+            />
+            <TooltipContent>{t("update")}</TooltipContent>
+          </Tooltip>
           {StatusIconComponent && status && (
             <Tooltip>
               <TooltipTrigger className="ml-auto cursor-default">
