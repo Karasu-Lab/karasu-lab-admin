@@ -5,9 +5,26 @@ import { useRouter } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { AlertCircle, CheckCircle2, Circle, Download, Loader2, RefreshCw } from "lucide-react";
 import { useContainerUpdate } from "@/hooks/use-container-update";
 import { ContainerToggleButton } from "./container-toggle-button";
+
+const UPDATE_STATUS_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
+  pulling: Download,
+  stopping: Circle,
+  starting: Circle,
+  done: CheckCircle2,
+  error: AlertCircle,
+};
+
+const UPDATE_STATUS_COLOR: Record<string, string> = {
+  pulling: "text-blue-500",
+  stopping: "text-amber-500",
+  starting: "text-amber-500",
+  done: "text-green-500",
+  error: "text-destructive",
+};
 
 interface ContainerPort {
   IP: string;
@@ -32,9 +49,12 @@ interface ContainerCardProps {
 export function ContainerCard({ container }: ContainerCardProps) {
   const t = useTranslations("Containers");
   const router = useRouter();
-  const { trigger, status, detail, pending } = useContainerUpdate(container.id);
+  const { trigger, status, pending } = useContainerUpdate(container.id);
 
   const displayName = container.names[0]?.replace(/^\//, "") ?? container.id.slice(0, 12);
+  const StatusIconComponent = status ? (UPDATE_STATUS_ICON[status] ?? Circle) : null;
+  const statusColor = status ? (UPDATE_STATUS_COLOR[status] ?? "text-muted-foreground") : "";
+  const statusLabel = status ? t(`updateProgress.${status}` as Parameters<typeof t>[0]) : "";
 
   return (
     <Card
@@ -60,7 +80,7 @@ export function ContainerCard({ container }: ContainerCardProps) {
             ))}
           </div>
         )}
-        <div className="flex gap-1 mt-auto">
+        <div className="flex items-center gap-1 mt-auto">
           <ContainerToggleButton containerId={container.id} state={container.state} />
           <Button
             size="icon"
@@ -78,16 +98,19 @@ export function ContainerCard({ container }: ContainerCardProps) {
               <RefreshCw className="size-4" />
             )}
           </Button>
+          {StatusIconComponent && status && (
+            <Tooltip>
+              <TooltipTrigger className="ml-auto cursor-default">
+                <StatusIconComponent className={`size-4 shrink-0 ${statusColor}`} />
+              </TooltipTrigger>
+              <TooltipContent>{statusLabel}</TooltipContent>
+            </Tooltip>
+          )}
         </div>
       </CardContent>
 
       {pending && (
-        <div className="absolute inset-0 rounded-xl bg-green-500/10 pointer-events-none flex items-end pb-3 px-4">
-          <p className="text-xs text-green-700 dark:text-green-400 font-medium">
-            {status ? t(`updateProgress.${status}` as Parameters<typeof t>[0]) : ""}
-            {detail && <span className="ml-1 text-muted-foreground">{detail}</span>}
-          </p>
-        </div>
+        <div className="absolute inset-0 rounded-xl bg-green-500/10 pointer-events-none" />
       )}
     </Card>
   );

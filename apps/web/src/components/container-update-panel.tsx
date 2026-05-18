@@ -2,21 +2,28 @@
 
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Layers, Loader2, RefreshCw } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  AlertCircle,
+  Archive,
+  Check,
+  CheckCircle2,
+  CheckCheck,
+  Circle,
+  Clock,
+  Download,
+  Layers,
+  Loader2,
+  PackageCheck,
+  RefreshCw,
+  ShieldCheck,
+} from "lucide-react";
 import { useContainerUpdate } from "@/hooks/use-container-update";
-import { useContainerLayers } from "@/hooks/use-container-layers";
+import { useContainerLayers, type LayerState } from "@/hooks/use-container-layers";
 
 interface ContainerUpdatePanelProps {
   containerId: string;
 }
-
-const LAYER_STATUS_VARIANT: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
-  "Pull complete": "default",
-  "Already exists": "secondary",
-  Extracting: "outline",
-  Downloading: "outline",
-};
 
 function SectionHeader({ title }: { title: string }) {
   return (
@@ -26,14 +33,93 @@ function SectionHeader({ title }: { title: string }) {
   );
 }
 
+const UPDATE_STATUS_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
+  pulling: Download,
+  stopping: Circle,
+  starting: Circle,
+  done: CheckCircle2,
+  error: AlertCircle,
+};
+
+const UPDATE_STATUS_COLOR: Record<string, string> = {
+  pulling: "text-blue-500",
+  stopping: "text-amber-500",
+  starting: "text-amber-500",
+  done: "text-green-500",
+  error: "text-destructive",
+};
+
+const LAYER_STATUS_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
+  Waiting: Clock,
+  "Pulling fs layer": Download,
+  Downloading: Download,
+  "Download complete": Check,
+  "Pull complete": PackageCheck,
+  "Already exists": CheckCheck,
+  Extracting: Archive,
+  "Verifying Checksum": ShieldCheck,
+};
+
+const LAYER_STATUS_COLOR: Record<string, string> = {
+  Waiting: "text-muted-foreground",
+  "Pulling fs layer": "text-blue-500",
+  Downloading: "text-blue-500",
+  "Download complete": "text-green-400",
+  "Pull complete": "text-green-500",
+  "Already exists": "text-muted-foreground",
+  Extracting: "text-amber-500",
+  "Verifying Checksum": "text-muted-foreground",
+};
+
+function StatusIcon({
+  label,
+  icon: Icon,
+  className,
+}: {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  className?: string;
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger className="cursor-default">
+        <Icon className={`size-4 shrink-0 ${className ?? "text-muted-foreground"}`} />
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+function LayerRow({ layerId, layer }: { layerId: string; layer: LayerState }) {
+  const Icon = LAYER_STATUS_ICON[layer.status] ?? Circle;
+  const color = LAYER_STATUS_COLOR[layer.status] ?? "text-muted-foreground";
+
+  return (
+    <div className="flex items-center gap-3 py-2 border-b border-border last:border-0">
+      <Layers className="size-4 text-muted-foreground shrink-0" />
+      <span className="font-mono text-xs text-muted-foreground w-28 shrink-0">
+        {layerId.slice(0, 12)}
+      </span>
+      <span className="text-xs font-mono text-muted-foreground flex-1 min-w-0 truncate">
+        {layer.progress ?? ""}
+      </span>
+      <StatusIcon label={layer.status} icon={Icon} className={color} />
+    </div>
+  );
+}
+
 export function ContainerUpdatePanel({ containerId }: ContainerUpdatePanelProps) {
   const t = useTranslations("Containers");
   const { trigger, status, pending } = useContainerUpdate(containerId);
   const { layers } = useContainerLayers(containerId);
 
+  const StatusIconComponent = status ? (UPDATE_STATUS_ICON[status] ?? Circle) : null;
+  const statusColor = status ? (UPDATE_STATUS_COLOR[status] ?? "text-muted-foreground") : "";
+  const statusLabel = status ? t(`updateProgress.${status}` as Parameters<typeof t>[0]) : "";
+
   return (
     <>
-      <div className="flex items-center gap-2 pt-1">
+      <div className="flex items-center justify-between pt-1">
         <Button
           size="sm"
           variant="outline"
@@ -48,10 +134,8 @@ export function ContainerUpdatePanel({ containerId }: ContainerUpdatePanelProps)
           )}
           {t("update")}
         </Button>
-        {status && (
-          <span className="text-xs text-muted-foreground">
-            {t(`updateProgress.${status}` as Parameters<typeof t>[0])}
-          </span>
+        {StatusIconComponent && status && (
+          <StatusIcon label={statusLabel} icon={StatusIconComponent} className={statusColor} />
         )}
       </div>
 
@@ -59,26 +143,7 @@ export function ContainerUpdatePanel({ containerId }: ContainerUpdatePanelProps)
         <div className="max-w-xl">
           <SectionHeader title="Pull Progress" />
           {Array.from(layers.entries()).map(([layerId, layer]) => (
-            <div
-              key={layerId}
-              className="flex items-center gap-4 py-2 border-b border-border last:border-0"
-            >
-              <Layers className="size-4 text-muted-foreground shrink-0" />
-              <span className="font-mono text-xs text-muted-foreground w-28 shrink-0">
-                {layerId.slice(0, 12)}
-              </span>
-              <Badge
-                variant={LAYER_STATUS_VARIANT[layer.status] ?? "outline"}
-                className="text-xs shrink-0"
-              >
-                {layer.status}
-              </Badge>
-              {layer.progress && (
-                <span className="text-xs font-mono text-muted-foreground truncate">
-                  {layer.progress}
-                </span>
-              )}
-            </div>
+            <LayerRow key={layerId} layerId={layerId} layer={layer} />
           ))}
         </div>
       )}
